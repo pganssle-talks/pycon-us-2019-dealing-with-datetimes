@@ -1,0 +1,7 @@
+__pycache__/
+.mypy_cache/
+.ipynb_checkpoints/
+
+*.py[cod]
+
+presentation.slides.html
