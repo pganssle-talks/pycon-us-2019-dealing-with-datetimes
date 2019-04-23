@@ -3,6 +3,15 @@ import time
 
 from datetime import timedelta
 
+def print_dtlist(dtlist):
+    values = False
+    for dt in dtlist:
+        print(dt)
+        values = True
+
+    if not values:
+        print("Empty")
+
 def print_dt_tzinfo(dt, fmt_str='%Y-%m-%d %H:%M:%S%z'):
     s0 = f'{dt.strftime(fmt_str)}\n'
     s1 = f'    tzname: {dt.tzname():>5};'
