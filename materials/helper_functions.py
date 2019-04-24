@@ -15,6 +15,16 @@ def print_dtlist(dtlist):
     if not values:
         print("Empty")
 
+
+def print_dts(dts_list):
+    format_str = '|'.join(['{:^40}'] * 2)
+    print(format_str.format('start_date', '+relativedelta'))
+    print(format_str.format(*(['-' * 40] * 2)))
+    for dts in dts_list:
+        dts_map = map(lambda d: d.strftime('%Y-%m-%d'), dts)
+        print(format_str.format(*dts_map))
+
+
 def print_dt_tzinfo(dt, fmt_str='%Y-%m-%d %H:%M:%S%z'):
     s0 = f'{dt.strftime(fmt_str)}\n'
     s1 = f'    tzname: {dt.tzname():>5};'
