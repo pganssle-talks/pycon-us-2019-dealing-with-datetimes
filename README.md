@@ -1,3 +1,5 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pganssle-talks/pycon-us-2019-dealing-with-datetimes/master?urlpath=lab/tree/materials)
+
 # Dealing with Datetimes
 Dealing with dates and times is famously complicated. In this tutorial, you'll work through a few common datetime-handling tasks and handle some edge cases you are likely to encounter at some point in your career.
 
