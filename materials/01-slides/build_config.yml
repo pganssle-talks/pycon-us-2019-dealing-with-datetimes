@@ -1,0 +1,11 @@
+files:
+    - custom.css
+
+dirs:
+    - reveal.js
+    - fonts
+    - images
+
+notebook: presentation.ipynb
+template: custom_template.tpl
+slides: presentation.slides.html

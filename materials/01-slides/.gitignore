@@ -1,0 +1,14 @@
+.mypy_cache
+.pytest_cache
+.ipynb_checkpoints
+.DS_Store
+
+__pycache__
+*.py[co]
+
+*.slides.html
+
+
+# Timezone map stuff
+timezones.geojson.zip
+zone_subset.geojson
