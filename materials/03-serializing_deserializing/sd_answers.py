@@ -1,5 +1,6 @@
 ### Exercise: Write a function to store a message with metadata in JSON
 import json
+import logging
 
 from dateutil import tz
 from datetime import datetime, timezone
@@ -31,6 +32,86 @@ def display_message(json_str: str) -> str:
 
     return (f"({sent_dt:%Y-%m-%d %H:%M:%S}) {user_from}\n" +
             f"{message}")
+
+
+### Exercise: Write a function to parse log messages
+def parse_log_line(line: str) -> dict:
+    dt_str, level_str, name, message = line.split(' : ', 4)
+    dt = datetime.fromisoformat(dt_str)
+
+    return {
+        'datetime': dt,
+        'level': level_str,
+        'name': name,
+        'message': message,
+    }
+
+
+# Alternate version
+def parse_log_line_enum(line: str) -> dict:
+    """Alternative version: parse the log level as well
+
+    If you wanted to support this in a generic parser, you may want an option
+    to pass a custom mapping of level strings to levels.
+    """
+
+    dt_str, level_str, name, message = line.split(' : ', 4)
+    dt = datetime.fromisoformat(dt_str)
+    level = _parse_enum_level(level_str.strip())
+
+    return {
+        'datetime': dt,
+        'level': level,
+        'name': name,
+        'message': message,
+    }
+
+_LOG_ENUM_MAP = {
+    "NOTSET": logging.NOTSET,
+    "DEBUG": logging.DEBUG,
+    "INFO": logging.INFO,
+    "WARNING": logging.WARNING,
+    "ERROR": logging.ERROR,
+    "CRITICAL": logging.CRITICAL
+}
+
+def _parse_enum_level(levelstr):
+    if levelstr in _LOG_ENUM_MAP:
+        return _LOG_ENUM_MAP[levelstr]
+
+    if not levelstr.startswith("Level "):
+        raise ValueError("Unknown logging level")
+    else:
+        return int(levelstr[len("Level "):])
+
+
+### Bonus Exercise: Configure the logger to output timestamps in an ISO 8601 format
+def get_iso_logger(name):
+    # Get a logger
+    logger = logging.getLogger(name)
+
+    ch = logging.StreamHandler()
+    logger.addHandler(ch)
+    logger.setLevel(logging.DEBUG)
+
+    formatter = IsoFormatter("{asctime} : {levelname} : {name} : {message}",
+                             style="{")
+    ch.setFormatter(formatter)
+
+    return logger
+
+
+class IsoFormatter(logging.Formatter):
+    def __init__(self, fmt=None, tzinfo=tz.tzlocal(), style="%"):
+        super().__init__(fmt=fmt, datefmt=None, style=style)
+        self._tzinfo = tzinfo
+
+    def formatTime(self, record, *args, **kwargs):
+        dt = datetime.fromtimestamp(record.created, tz=self._tzinfo)
+
+        return dt.isoformat()
+
+
 
 
 ### Exercise: Configure JSON encoder/decoder to (de)serialize datetimes
