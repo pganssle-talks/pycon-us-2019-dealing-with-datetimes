@@ -85,21 +85,28 @@ def _get_schedule_grid(schedule):
     return rows, date_labels, day_labels
 
 def _render_schedule_html(rows, date_labels, day_labels, style=None):
-    style = style or _get_default_style()
+    style = style or ""
 
     # Convert the row lists into HTML
-    def make_table_row(row, cls_attr):
+    def make_table_row(row, cls_attr, cell_tag='td', style=None):
         rowstr = ""
+        row_fmt = f"    <{cell_tag}"
+        if style:
+            row_fmt += f" style=\"{style}\""
+        row_fmt += f">%s</{cell_tag}>\n"
+
         for cell in row:
-            rowstr += f"    <td>{cell}</td>\n"
+            rowstr += (row_fmt % cell)
 
         class_str = f'class="{cls_attr}"' if cls_attr else ''
 
-        return f"<tr {class_str}>\n{rowstr}</tr>"
+        return f"<tr {class_str} style=\"text-align: center\">\n{rowstr}</tr>"
 
     table_row_strs = ""
-    table_row_strs += make_table_row(date_labels, "header datehead")
-    table_row_strs += make_table_row(day_labels, "header wdayhead")
+    table_row_strs += make_table_row(date_labels, "header datehead",
+                                     cell_tag='th')
+    table_row_strs += make_table_row(day_labels, "header wdayhead",
+                                     cell_tag='th')
 
     for ii, row in enumerate(rows):
         oddstr = "odd_row" if ii % 2 else "even_row"
@@ -107,39 +114,23 @@ def _render_schedule_html(rows, date_labels, day_labels, style=None):
 
     table_row_strs = textwrap.indent(table_row_strs, " " * 4)
 
-    return f"{style}<table>\n{table_row_strs}\n</table>"
+    table_style="font-size: 1.4em"
 
-def _get_default_style():
-    return textwrap.dedent("""
-    <style type="type/css">
-
-    .header tr {
-        font-size: 18px;
-        background #cacaca;
-    }
-
-    .rows tr {
-        font-size: 16px;
-    }
-
-    .odd_row {
-        background-color: rgb(245, 245, 245);
-    }
-
-    .even_row {
-        background-color: rgb(255, 255, 255);
-    }
-    </style>
-    """).strip()
+    return f"<table style=\"{table_style}\">\n{table_row_strs}\n</table>"
 
 
-def display_bus_schedule(schedule, style=None):
-    from IPython.display import display, HTML
-
+def _get_bus_schedule(schedule, style=None):
+    from IPython.display import HTML
     schedule_grid, *labels = _get_schedule_grid(schedule)
     html = _render_schedule_html(schedule_grid, *labels, style=style)
 
-    display(HTML(html))
+    return HTML(html)
+
+
+def display_bus_schedule(schedule, style=None):
+    from IPython.display import display
+
+    display(_get_bus_schedule(schedule, style=style))
 
 
 class TZContextBase:
