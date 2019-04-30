@@ -17,6 +17,8 @@ def test_encode_message_metadata(encode_message):
     with freeze_time("2000-01-01T05:15:30.214333-05:00"):
         json_str = encode_message(user_to, user_from, message)
 
+        print(f"Output:\n{json_str}")
+
         decoded = json.loads(json_str)
         assert decoded["user_to"] == user_to
         assert decoded["user_from"] == user_from
