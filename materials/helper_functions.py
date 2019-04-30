@@ -127,8 +127,12 @@ def _get_bus_schedule(schedule, style=None):
     return HTML(html)
 
 
-def display_bus_schedule(schedule, style=None):
+_BETWEEN = (datetime(2020, 11, 1), datetime(2020, 11, 8))
+def display_bus_schedule(schedule, between=_BETWEEN, style=None):
     from IPython.display import display
+
+    if hasattr(schedule, 'between') and between is not None:
+        schedule = schedule.between(*between)
 
     display(_get_bus_schedule(schedule, style=style))
 
