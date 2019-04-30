@@ -7,6 +7,8 @@ from dateutil import tz
 
 from freezegun import freeze_time
 
+from helper_functions import TZEnvContext
+
 
 ### Exercise: Write a function to store a message with metadata in JSON
 def test_encode_message_metadata(encode_message):
@@ -37,10 +39,12 @@ def test_display_message_metadata(display_message):
     with freeze_time("2000-01-01T05:15:30.214333-05:00"):
         json_str = sd_answers.encode_message(user_to, user_from, message)
 
-        display_str = display_message(json_str)
+        with TZEnvContext('EST5EDT'):
+            display_str = display_message(json_str)
         expected = f"(2000-01-01 05:15:30) {user_from}\n{message}"
 
-        assert display_str == expected
+        assert display_str == expected, \
+            f"{display_str} != {expected}"
 
     print("Passed!")
 
